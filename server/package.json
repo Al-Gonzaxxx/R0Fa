@@ -4,8 +4,9 @@
   "description": "rofa app",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ."
+    "start": "node src/app.js",
+    "watch": "nodemon -w ./src -x npm run watch:serve",
+    "watch:serve": "node src/app.js"
   },
   "author": "kgvc",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^14.4.2",
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.14",
+    "mongoose": "^5.6.4"
   }
 }

@@ -1,24 +1,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const graphglHTTP =  require('express-graphql');
-const schema = require('./schema/schema.js');
 const fs = require('fs');
 const https = require('https');
-const { PORT,DBURI } = require('./modules/common/const.js');
-const app = express();
 
+
+const schema = require('./schema/schema.js');
+const { PORT,DBURI} = require('./modules/common/const.js');
+const resolver = require('./resolvers/index.js');
+
+const app = express();
 var step = 1;
 var rocket = '🚀';
 
 app.use('/graphql',graphglHTTP({
-  schema,
+  schema: schema,
+  rootValue: resolver,
   graphiql: true
 }));
 
 
 
-
-//;(async() => {
+// ---sync---
 
 	mongoose.connect(DBURI);
 	mongoose.connection.once('open',()=>{
@@ -35,7 +38,22 @@ app.use('/graphql',graphglHTTP({
 
 
 
-//})
+//---async---- (not working)
+// ;(async() => {
+// 	const connection = await mongoose.connect(DBURI);
+// 	connection.once('open',()=>{
+// 		console.log(rocket.repeat(step++) + 'connected to Database');
+// 	});
+
+// 	const server = https.createServer({
+// 	key: fs.readFileSync('./https/server.key'),
+// 	cert: fs.readFileSync('./https/server.cert')
+// 	},app);
+
+// 	await server.listen({ port: PORT},()=>{
+// 		console.log(rocket.repeat(step++) + ` Server ready at localhost:${PORT}`);
+// 	});
+// })
 
 
 

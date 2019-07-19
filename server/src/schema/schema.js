@@ -130,6 +130,11 @@ type AuthData {
   tokenExpiration: Int!
 }
 
+type ReturnDate {
+  status: String!
+  message: String!
+}
+
 input UserInput {
   email: String!
   password: String!
@@ -140,6 +145,7 @@ input UserInput {
 type RootQuery {
     users: [UserType!]
     login(email: String!, password: String!): AuthData!
+    verifyEmail(email: String!, token: String!): ReturnDate!
 }
 
 type RootMutation {

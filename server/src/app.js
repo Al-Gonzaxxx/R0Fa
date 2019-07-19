@@ -8,18 +8,21 @@ const https = require('https');
 const schema = require('./schema/schema.js');
 const { PORT,DBURI} = require('./modules/common/const.js');
 const resolver = require('./resolvers/index.js');
+const userRoute = require('./routes/userRouter');
 
 const app = express();
 var step = 1;
 var rocket = '🚀';
+
+
+// routes 
+//app.use('/user',userRoute);
 
 app.use('/graphql',graphglHTTP({
   schema: schema,
   rootValue: resolver,
   graphiql: true
 }));
-
-
 
 // ---sync---
 

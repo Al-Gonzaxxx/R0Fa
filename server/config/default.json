@@ -1,5 +1,6 @@
 {
   "PORT": 4000,
   "DBURI": "mongodb+srv://R0fa:Yumi7165TTh@cluster0-ps0tk.mongodb.net/test?retryWrites=true&w=majority",
-  "SALTROUNDS": 10
+  "SALTROUNDS": 10,
+  "PUBLICADDRESS": "localhost"
 }

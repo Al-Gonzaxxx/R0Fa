@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const graphglHTTP =  require('express-graphql');
 const fs = require('fs');
 const https = require('https');
+const cors = require('cors');
+
 
 
 const schema = require('./schema/schema.js');
@@ -10,13 +12,18 @@ const { PORT,DBURI} = require('./modules/common/const.js');
 const resolver = require('./resolvers/index.js');
 const userRoute = require('./routes/userRouter');
 
+
+
 const app = express();
 var step = 1;
 var rocket = '🚀';
 
 
-// routes 
+// routes
 //app.use('/user',userRoute);
+
+//allow cors
+app.use(cors());
 
 app.use('/graphql',graphglHTTP({
   schema: schema,
@@ -57,8 +64,3 @@ app.use('/graphql',graphglHTTP({
 // 		console.log(rocket.repeat(step++) + ` Server ready at localhost:${PORT}`);
 // 	});
 // })
-
-
-
-	
- 

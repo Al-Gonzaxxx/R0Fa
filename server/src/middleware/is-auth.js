@@ -2,29 +2,43 @@
 
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
-  const authHeader = req.get('Authorization');
-  if (!authHeader) {
+
+ const contextFunction = ({ req }) => {
+  
+
+  const cookie = req.cookie;
+  if (!cookie) {
     req.isAuth = false;
-    return next();
+    return { req };
   }
-  const token = authHeader.split(' ')[1];
+  const jwttoken = cookie.jwt;
+  if(!jwttoken){
+    req.isAuth = false;
+    return { req };
+  }
+  const token = jwttoken.split(' ')[1];
   if (!token || token === '') {
     req.isAuth = false;
-    return next();
+    return { req };
   }
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, 'somesupersecretkey');
   } catch (err) {
     req.isAuth = false;
-    return next();
+    return { req };
   }
   if (!decodedToken) {
     req.isAuth = false;
-    return next();
+    return { req };
   }
   req.isAuth = true;
   req.userId = decodedToken.userId;
-  next();
+  return { req };
 };
+
+
+module.exports = {
+  contextFunction
+}
+

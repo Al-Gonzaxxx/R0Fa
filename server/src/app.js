@@ -1,66 +1,46 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const graphglHTTP =  require('express-graphql');
-const fs = require('fs');
-const https = require('https');
-const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
+//const cors = require('cors');
+
+const { ApolloServer } = require('apollo-server-express');
+
+
+const { contextFunction } = require('./middleware/is-auth');
+const typeDefs = require('./schema/typeDefs');
+const { PORT,DBURI} = require('./modules/common/const');
+const resolvers = require('./resolvers/index');
 
 
 
-const schema = require('./schema/schema.js');
-const { PORT,DBURI} = require('./modules/common/const.js');
-const resolver = require('./resolvers/index.js');
-const userRoute = require('./routes/userRouter');
 
-
-
-const app = express();
 var step = 1;
 var rocket = '🚀';
 
 
-// routes
-//app.use('/user',userRoute);
+//app.use(cors());
 
-//allow cors
-app.use(cors());
+const server = new ApolloServer({ 
+	typeDefs, 
+	resolvers,
+	context: ({req}) => contextFunction({req})
+});
 
-app.use('/graphql',graphglHTTP({
-  schema: schema,
-  rootValue: resolver,
-  graphiql: true
-}));
 
 // ---sync---
 
-	mongoose.connect(DBURI);
-	mongoose.connection.once('open',()=>{
-		console.log(rocket.repeat(step++) + 'connected to Database');
-	});
+mongoose.connect(DBURI);
+mongoose.connection.once('open',()=>{
+	console.log(rocket.repeat(step++) + 'connected to Database');
+});
 
-	https.createServer({
-	key: fs.readFileSync('./https/server.key'),
-	cert: fs.readFileSync('./https/server.cert')
-	},app
-	).listen({ port: PORT},()=>{
-		console.log(rocket.repeat(step++) + ` Server ready at localhost:${PORT}`);
-	});
+const app = express();
+app.use(cookieParser());
+server.applyMiddleware({ app });
+
+app.listen({ port: 4000 }, () => {
+  	console.log(rocket.repeat(step++) + ` Server ready at localhost:${PORT}`)
+});
 
 
-
-//---async---- (not working)
-// ;(async() => {
-// 	const connection = await mongoose.connect(DBURI);
-// 	connection.once('open',()=>{
-// 		console.log(rocket.repeat(step++) + 'connected to Database');
-// 	});
-
-// 	const server = https.createServer({
-// 	key: fs.readFileSync('./https/server.key'),
-// 	cert: fs.readFileSync('./https/server.cert')
-// 	},app);
-
-// 	await server.listen({ port: PORT},()=>{
-// 		console.log(rocket.repeat(step++) + ` Server ready at localhost:${PORT}`);
-// 	});
-// })

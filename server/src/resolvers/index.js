@@ -1,10 +1,17 @@
-const authResolver = require('./auth');
+const AuthResolver = require('./auth');
 const UserResolver = require('./userResolver');
-// const bookingResolver = require('./booking');
 
 const rootResolver = {
-  ...authResolver,
-  ...UserResolver
+  Query:{
+  	...AuthResolver.Query,
+  	...UserResolver.Query
+  },
+  Mutation:{
+  	...AuthResolver.Mutation,
+  	...UserResolver.Mutation
+  }
+
+  
   // ...bookingResolver
 };
 

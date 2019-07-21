@@ -22,13 +22,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
 module.exports = {
-
-  Mutation:{
-    createUser: async (parent, args, context, info) => {
-    console.log(parent);
-    console.log(args);
-    console.log(context);
-    console.log(info);
+  createUser: async args => {
     try {
       const existingUser = await User.findOne({ email: args.userInput.email });
       if (existingUser) {
@@ -56,18 +50,16 @@ module.exports = {
     } catch (err) {
       throw err;
     }
-  }
- },
+  },
 
 
-Query:{
 
-  login: async (parent, args, context, info) => {
-    const user = await User.findOne({ email: args.email });
+  login: async ({ email, password }) => {
+    const user = await User.findOne({ email: email });
     if (!user) {
       throw new Error('User does not exist!');
     }
-    const isEqual = await bcrypt.compare(args.password, user.password);
+    const isEqual = await bcrypt.compare(password, user.password);
     if (!isEqual) {
       throw new Error('Password is incorrect!');
     }
@@ -82,9 +74,9 @@ Query:{
   },
 
 
-  verifyEmail: async (parent, args, context, info) => {
 
-    const resultToken = await Token.findOne({token: args.token});
+  verifyEmail: async ({email, token}) => {
+    const resultToken = await Token.findOne({token: token});
     if(!resultToken){
       throw new Error('Invalid Token..');
     }
@@ -93,7 +85,7 @@ Query:{
       resultToken.remove();
       throw new Error('Token exist, but user doesn\'t exist');
     }
-    if(args.email !== user.email){
+    if(email !== user.email){
       throw new Error('Email token mismatch...');
     }
     if(user.isVerified){
@@ -105,6 +97,7 @@ Query:{
     resultToken.remove();
     return { status: 'OK', message: 'Email is verified now.' };
   }
-}
-  
+
+
+
 };

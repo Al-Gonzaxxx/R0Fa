@@ -1,25 +1,32 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from "react-apollo";
-import  TestComponent  from './components/TestComponent';
+
+import { ApolloProvider } from "@apollo/react-hooks";
+import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
+import { UserProvider } from './context/UserContext';
+
+import { Routerm } from './CP/components/Router/Router';
+import HomeMain from './CP/components/homeComponents/homeMain';
+import "./index.css";
+
 
 
 const client = new ApolloClient({
-  uri: 'https://localhost:4000/graphql'
+  uri: 'http://localhost:4000/graphql'
 })
 
-class App extends Component{
-  render(){
-    return (
+
+const App = () =>(
       <ApolloProvider client={client}>
-            <div id="main">
-              <h1> KGVC </h1>
-            </div>
-            <TestComponent />
+        <ApolloHooksProvider client={client}>
+          <UserProvider>
+             <Routerm />
+          </UserProvider>
+        </ApolloHooksProvider>
       </ApolloProvider>
-    )
-  }
-}
+);
 
 
 export default App;
+
+

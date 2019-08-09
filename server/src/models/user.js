@@ -8,6 +8,7 @@ const userSchema = new Schema({
 	email: {type: String, unique:true, required: true},
 	password: {type: String, required: true},
 	isVerified: {type: Boolean, default: false}
+	//timestamps: { createdAt: 'created_at' }
 });
 
 module.exports = mongoose.model('User', userSchema);

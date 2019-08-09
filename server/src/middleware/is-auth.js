@@ -1,44 +1,46 @@
 //copied
 
 const jwt = require('jsonwebtoken');
+const { TOKENKEY } = require('../modules/common/const');
 
 
- const contextFunction = ({ req }) => {
+ function authentication(req,res,next){
   
-
-  const cookie = req.cookie;
-  if (!cookie) {
+  const cookies = req.cookies;
+  if (!cookies) {
+    console.log("cookies is null");
     req.isAuth = false;
-    return { req };
+    return next();
   }
-  const jwttoken = cookie.jwt;
+  const jwttoken = cookies.jwt;
   if(!jwttoken){
+    console.log("jwttoken is null");
     req.isAuth = false;
-    return { req };
-  }
-  const token = jwttoken.split(' ')[1];
-  if (!token || token === '') {
-    req.isAuth = false;
-    return { req };
+    return next();
   }
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, 'somesupersecretkey');
+    decodedToken = jwt.verify(jwttoken, TOKENKEY);
   } catch (err) {
+    //console.log(err);
+    console.log("token verify error ..1");
     req.isAuth = false;
-    return { req };
+    return next();
   }
   if (!decodedToken) {
+    console.log("token verify error ..2");
     req.isAuth = false;
-    return { req };
+    return next();
   }
   req.isAuth = true;
   req.userId = decodedToken.userId;
-  return { req };
+  req.token=jwttoken;
+  console.log("authenticated...")
+  return next();
 };
 
 
 module.exports = {
-  contextFunction
+  authentication
 }
 

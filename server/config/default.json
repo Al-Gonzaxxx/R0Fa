@@ -2,5 +2,6 @@
   "PORT": 4000,
   "DBURI": "mongodb+srv://R0fa:yumi7165@cluster0-ps0tk.mongodb.net/test?retryWrites=true&w=majority",
   "SALTROUNDS": 10,
-  "PUBLICADDRESS": "localhost"
+  "PUBLICADDRESS": "localhost",
+  "TOKENKEY": "iMkGsAm20000101_Celia/KkkkK23lk4jsidf09c09sd0:][)(&*&(@<MN899sdf3%^7f"
 }
